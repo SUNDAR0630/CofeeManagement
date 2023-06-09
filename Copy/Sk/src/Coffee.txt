@@ -1,0 +1,224 @@
+CoffeeManagementDashboard.js
+
+
+import React, { useState } from "react";
+import Data from "./Data.json";
+import { Link } from "react-router-dom";
+import "./Coffee.css";
+const CoffeeManagementDashboard = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredData = Data.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  return (
+    <div className="AZ">
+      <div className="CV">
+      <h1>COFFEE MANAGEMENT</h1>
+      </div>
+      <div className="cb">
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+      </div>
+      <div className="image-cards">
+        {filteredData.map((item) => (
+          <>
+            <div  key={item.id}>
+              <Link to={`/Data/${item.id}`} >
+                <img className="image-card"src={item.image} alt={item.title} />
+              </Link>
+              <h3>{item.title}</h3>
+            </div>
+          </>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default CoffeeManagementDashboard;
+
+
+
+
+
+
+
+
+
+Coffee.css
+
+
+
+/* styles.css */
+.image-cards {
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cb{
+     width: 280px;
+  }
+  .image-card {
+    width: 80%;
+    aspect-ratio: 3/2;
+    mix-blend-mode: color-burn;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+
+  }
+  .image-card:hover {
+    transform: scale(1.1);
+  }
+  .image-card img {
+    width: 100%;
+    height: auto;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+ .CV{
+    color: brown;
+ }
+
+  
+  .coffee-details {
+    margin: auto;
+    /* margin-top: 50px; */
+    max-width: 400px;
+    padding: 20px;
+    /* background-color: #f2f2f2; */
+    border-radius: 5px;
+  }
+  
+  .coffee-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .coffee-description {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .coffee-image{
+    width: 90%;
+    object-fit: contain;
+  }
+.WE{
+    background-image: url("./df.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+Details.js
+
+
+
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import Data from "./Data.json";
+import "./Coffee.css";
+
+
+const Details = () => {
+    const { id } = useParams();
+    const [remark, setRemark] = useState('');
+  
+  const coffeeItem = Data.find((item) => item.id == parseInt(id));
+  const handleRemarksSubmit = () => {
+    const updatedCoffeeData = Data.map((item) => {
+      if (item.id === parseInt(id)) {
+        return { ...item, remark };
+      }
+      return item;
+    });
+
+    console.log(updatedCoffeeData);
+  
+    
+  };
+  if (!coffeeItem) {
+    return <div>Not found</div>;
+  }
+  return (
+    <div className="WE">
+    <div className="coffee-details">
+      <img className="coffee-image" src={coffeeItem.image} alt={coffeeItem.title} />
+      <h2 className="coffee-title">{coffeeItem.title}</h2>
+      <p className="coffee-description">{coffeeItem.description}</p>
+      <p className="coffee-description">{coffeeItem.ingredients}</p>
+      <form onSubmit={handleRemarksSubmit}>
+        <label htmlFor="remark">Add Remark:</label>
+        <input
+          type="text"
+          id="remark"
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    </div>
+  );
+};
+
+export default Details;
+
+APP.js
+
+
+import React from 'react';
+import {  Route, Routes } from 'react-router-dom';
+import CoffeeManagementDashboard from './CoffeeManagementDashboard';
+import Details from './Details';
+
+
+const App = () => {
+  return (
+    
+      <div className="App">
+        <Routes>
+          <Route  path="/" element={<CoffeeManagementDashboard/>} />
+          <Route path="/Data/:id" element={<Details/>} />
+        </Routes>
+      </div>
+    
+  );
+};
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
